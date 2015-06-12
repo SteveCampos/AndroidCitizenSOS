@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Ciudadano S.O.S</string>
+    <string name="hello_world">Hello Ciudadano S.O.S.!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_navigation_view">Ciudadano S.O.S.</string>
+    <string name="username">Steve Campos Vega</string>
+    <string name="title_activity_maps">Map</string>
+</resources>
