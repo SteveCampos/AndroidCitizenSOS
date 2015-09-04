@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.design.widget.*;
 import android.support.design.widget.NavigationView;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import campos.steve.tryingnavigationview.AsyncTask.Localizacion;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,
@@ -56,6 +59,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationRequest mLocationRequest;
 
     private Activity mainActivity;
+
+    private String android_id = "";
+
+    private double currentLatitude ;
+    private double currentLongitude;
     @Override
     protected void onPause() {
         super.onPause();
@@ -104,7 +112,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
         mainActivity = this;
-
+         android_id= Settings.Secure.getString(mainActivity.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
         setUpMapIfNeeded();
 
         // Check if has GPS
@@ -137,7 +146,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
+                Log.d("API LOCALIZACION",android_id+ "-"+currentLatitude+ "-"+currentLongitude);
+                new Localizacion().execute(android_id, ""+currentLatitude, ""+currentLongitude);
                 Snackbar.make(floatingActionButton, "Pedido S.O.S. Enviado", Snackbar.LENGTH_LONG).show();
+
             }
         });
 
@@ -214,8 +226,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void handleNewLocation(Location location) {
         Log.d(TAG, location.toString());
 
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
+        currentLatitude = location.getLatitude();
+        currentLongitude = location.getLongitude();
 
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
