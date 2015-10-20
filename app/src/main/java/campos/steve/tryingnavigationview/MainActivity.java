@@ -1,6 +1,8 @@
 package campos.steve.tryingnavigationview;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.provider.Settings;
 import android.support.design.widget.*;
 import android.support.design.widget.NavigationView;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double currentLatitude ;
     private double currentLongitude;
 
+
+    int mNotificationId = 465023;
     @Override
     protected void onPause() {
         super.onPause();
@@ -171,8 +176,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         myFirebaseRef
                 .addChildEventListener(new ChildEventListener() {
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
                         Snackbar.make(floatingActionButton, (String) dataSnapshot.child("text").getValue(), Snackbar.LENGTH_LONG).show();
                         //adapter.add((String) dataSnapshot.child("text").getValue());
+                        //postNotif((String) dataSnapshot.child("text").getValue());
                     }
 
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -180,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        //postNotif((String) dataSnapshot.child("text").getValue());
                     }
 
                     public void onChildMoved(DataSnapshot dataSnapshot, String s) {
@@ -216,6 +224,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return  true;
             }
         });
+
+        // Start the background Firebase activity
+        startService(new Intent(FirebaseBackgroundService.class.getName()));
     }
 
 
@@ -271,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
                 .title("Estoy aquí! Auxilio")
-                .snippet("COORDENADAS: "+currentLatitude+", "+currentLongitude);
+                .snippet("COORDENADAS: " + currentLatitude + ", " + currentLongitude);
         mMap.addMarker(options);
         mMap.setMyLocationEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
@@ -349,4 +360,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         final AlertDialog alert = builder.create();
         alert.show();
     }
+
+   /* private void postNotif(String notifString) {
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.app_launcher)
+                        .setContentTitle("Firebase location")
+                        .setContentText(notifString);
+
+        Intent resultIntent  = new Intent(this, MainActivity.class);
+        // Because clicking the notification opens a new ("special") activity, there's
+        // no need to create an artificial back stack.
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        mBuilder.setContentIntent(resultPendingIntent);
+        mNotificationManager.notify(mNotificationId, mBuilder.build());
+    }*/
 }
