@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         Snackbar.make(floatingActionButton, (String) dataSnapshot.child("text").getValue(), Snackbar.LENGTH_LONG).show();
                         //adapter.add((String) dataSnapshot.child("text").getValue());
-                        //postNotif((String) dataSnapshot.child("text").getValue());
+                        postNotif((String) dataSnapshot.child("text").getValue());
                     }
 
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        //postNotif((String) dataSnapshot.child("text").getValue());
+                        postNotif((String) dataSnapshot.child("text").getValue());
                     }
 
                     public void onChildMoved(DataSnapshot dataSnapshot, String s) {
@@ -361,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         alert.show();
     }
 
-   /* private void postNotif(String notifString) {
+    private void postNotif(String notifString) {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         NotificationCompat.Builder mBuilder =
@@ -383,5 +383,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mBuilder.setContentIntent(resultPendingIntent);
         mNotificationManager.notify(mNotificationId, mBuilder.build());
-    }*/
+    }
 }
