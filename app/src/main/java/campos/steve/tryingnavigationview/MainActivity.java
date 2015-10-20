@@ -19,6 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private double currentLatitude ;
     private double currentLongitude;
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -102,14 +107,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.addMarker(new MarkerOptions()
                 .title("Sydney")
                 .snippet("The most populous city in Australia.")
-                .position(sydney));
-                */
+                .position(sydney));*/
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Setup firebase
+        Firebase.setAndroidContext(this);
+
+        final Firebase myFirebaseRef = new Firebase("https://luminous-fire-7318.firebaseio.com/todoItems");
+        //myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
+
 
         mainActivity = this;
          android_id= Settings.Secure.getString(mainActivity.getContentResolver(),
@@ -146,12 +157,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                Log.d("API LOCALIZACION",android_id+ "-"+currentLatitude+ "-"+currentLongitude);
-                new Localizacion().execute(android_id, ""+currentLatitude, ""+currentLongitude);
+                Log.d("API LOCALIZACION", android_id + "-" + currentLatitude + "-" + currentLongitude);
+                //new Localizacion().execute(android_id, ""+currentLatitude, ""+currentLongitude);
+                myFirebaseRef
+                        .push()
+                        .child("text")
+                        .setValue(""+currentLatitude+","+currentLongitude);
                 Snackbar.make(floatingActionButton, "Pedido S.O.S. Enviado", Snackbar.LENGTH_LONG).show();
 
             }
         });
+
+        myFirebaseRef
+                .addChildEventListener(new ChildEventListener() {
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        Snackbar.make(floatingActionButton, (String) dataSnapshot.child("text").getValue(), Snackbar.LENGTH_LONG).show();
+                        //adapter.add((String) dataSnapshot.child("text").getValue());
+                    }
+
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        //adapter.remove((String) dataSnapshot.child("text").getValue());
+                    }
+
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    }
+
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    }
+
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -236,7 +272,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .position(latLng)
                 .title("Estoy aquí! Auxilio")
                 .snippet("COORDENADAS: "+currentLatitude+", "+currentLongitude);
-
         mMap.addMarker(options);
         mMap.setMyLocationEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));

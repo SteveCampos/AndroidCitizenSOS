@@ -16,21 +16,24 @@ public class Localizacion extends AsyncTask<String, String, String> {
 
     String TAG_API_LOCALIZACION = "API LOCALIZACION";
     JSONObject jsonObject = null;
+    JSONObject jsonObjectUbicaciones = null;
 
     @Override
     protected String doInBackground(String... strings) {
-        RestApi api = new RestApi();
+        /*RestApi api = new RestApi();
         String device = strings[0];
         String latitud = strings[1];
         String longitud = strings[2];
 
         try {
             jsonObject = api.InsUpdLocalizacionPrueba(device, latitud, longitud);
+            jsonObjectUbicaciones = api.GetLocalizacion();
+
             Log.d(TAG_API_LOCALIZACION, jsonObject.toString());
         } catch (Exception e) {
             e.printStackTrace();
             Log.d(TAG_API_LOCALIZACION, e.getMessage());
-        }
+        }*/
         return null;
     }
 }

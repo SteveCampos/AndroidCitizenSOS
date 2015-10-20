@@ -23,6 +23,7 @@ import org.json.JSONArray;
  * Created by Usuario on 04/09/2015.
  */
 public class RestApi {
+   /*
     private final String urlString = "http://190.81.172.113/RestFull/StockAgente.ashx";
 
     private static String convertStreamToUTF8String(InputStream stream) throws IOException {
@@ -129,6 +130,6 @@ public class RestApi {
         String r = load(s);
         result = new JSONObject(r);
         return result;
-    }
+    }*/
 
 }
